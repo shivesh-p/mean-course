@@ -12,10 +12,18 @@
     mat-icon-button
     class="example-icon add_circle"
     [routerLink]="['/create']"
+    [routerLinkActive]="'mat-accent'"
+    title="Create a post"
   >
     <mat-icon>add_circle</mat-icon>
   </button>
-  <button mat-icon-button class="example-icon" [routerLink]="['/']">
+  <button
+    mat-icon-button
+    class="example-icon"
+    [routerLink]="['/list']"
+    [routerLinkActive]="'mat-accent'"
+    title="View all posts"
+  >
     <mat-icon>list</mat-icon>
   </button>
 </mat-toolbar>

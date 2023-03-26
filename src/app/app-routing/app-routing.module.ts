@@ -5,14 +5,17 @@ import { PostListComponent } from '../posts/post-list/post-list.component';
 import { PostsCreateComponent } from '../posts/posts-create/posts-create.component';
 
 const routes: Routes = [
-  { path: '',pathMatch:'full', component: PostListComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'list' },
+
+  { path: 'list', pathMatch: 'full', component: PostListComponent },
   { path: 'create', component: PostsCreateComponent },
+  { path: 'edit/:id', component: PostsCreateComponent },
+
   { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}
-
