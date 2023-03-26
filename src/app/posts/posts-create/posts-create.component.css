@@ -1,0 +1,8 @@
+mat-card-header {
+  color: #fff;
+}
+
+mat-form-field,
+textarea {
+  width: 100%;
+}

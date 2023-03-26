@@ -1,0 +1,21 @@
+<mat-toolbar>
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with menu icon"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Post It!</span>
+  <span class="example-spacer"></span>
+  <button
+    mat-icon-button
+    class="example-icon add_circle"
+    [routerLink]="['/create']"
+  >
+    <mat-icon>add_circle</mat-icon>
+  </button>
+  <button mat-icon-button class="example-icon" [routerLink]="['/']">
+    <mat-icon>list</mat-icon>
+  </button>
+</mat-toolbar>

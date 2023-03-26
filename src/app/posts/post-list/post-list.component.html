@@ -1,0 +1,28 @@
+<mat-accordion
+  displayMode="default"
+  [multi]="true"
+  [hideToggle]="false"
+  *ngIf="posts.length > 0"
+>
+  <mat-expansion-panel [hideToggle]="false" *ngFor="let item of posts">
+    <mat-expansion-panel-header>{{ item.title }}</mat-expansion-panel-header>
+    {{ item.content }}
+    <mat-action-row>
+      <button
+        mat-icon-button
+        class="example-icon add_circle"
+        (click)="onEdit(item.id)"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        class="example-icon add_circle"
+        (click)="onDelete(item.id)"
+      >
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
+<p *ngIf="posts.length <= 0" class="info-text mat-body-1">No posts to show!</p>
