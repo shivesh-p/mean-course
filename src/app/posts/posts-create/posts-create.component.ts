@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Posts } from '../../general.model';
+import '../../ng-form.extension';
 import { PostsService } from '../../posts.service';
 
 @Component({
@@ -9,8 +11,10 @@ import { PostsService } from '../../posts.service';
   styleUrls: ['./posts-create.component.css'],
 })
 export class PostsCreateComponent {
-  private isEdit: boolean = false;
-  private postId: string | null = null;
+  isEdit: boolean = false;
+  isLoading: boolean = false;
+  postId: string | null = null;
+  post: Posts;
 
   constructor(
     private postService: PostsService,
@@ -23,14 +27,25 @@ export class PostsCreateComponent {
       if (params.has('id')) {
         this.postId = params.get('id');
         this.isEdit = true;
-      }
-      else {
+        this.isLoading = true;
+        this.postService
+          .getPostById(this.postId)
+          .subscribe((v: { message: string; posts: Posts }) => {
+            this.post = v.posts;
+            this.isLoading = false;
+          });
+      } else {
         this.isEdit = false;
       }
     });
   }
   onSubmit(form: NgForm) {
-    this.postService.addPost(form.value);
-    form.reset();
+    this.isLoading = true;
+    if (!this.isEdit) {
+      this.postService.addPost(form.value);
+    } else {
+      this.postService.editPost(form.value, this.postId);
+    }
+    form.resetForm();
   }
 }

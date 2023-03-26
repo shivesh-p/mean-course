@@ -3,14 +3,15 @@
     <mat-card-header>
       <mat-card-title>Posts</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
+    <mat-card-content *ngIf="!isLoading">
       <form (submit)="onSubmit(form)" #form="ngForm">
         <mat-form-field>
           <mat-label>Title</mat-label>
           <input
             name="title"
             matInput
-            ngModel
+            [ngModel]="post?.title"
             required
             maxlength="35"
             #name="ngModel"
@@ -22,7 +23,7 @@
             rows="5"
             name="content"
             matInput
-            ngModel
+            [ngModel]="post?.content"
             required
             #content="ngModel"
             placeholder="Content"
@@ -32,11 +33,11 @@
         <mat-card-actions align="start">
           <button
             mat-raised-button
-            color="primary"
+            color="accent"
             type="submit"
             [disabled]="!form.valid"
           >
-            Create
+            {{ isEdit ? "Edit" : "Create" }}
           </button>
         </mat-card-actions>
       </form>
