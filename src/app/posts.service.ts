@@ -10,26 +10,38 @@ import { Posts, PostsDto } from './general.model';
 export class PostsService {
   private baseUrl: string = 'http://localhost:3000/api';
   private posts: Posts[] = [];
-  public posts$: Subject<Posts[]> = new Subject<Posts[]>();
+  public posts$: Subject<{ posts: Posts[]; totalPosts: number }> = new Subject<{
+    posts: Posts[];
+    totalPosts: number;
+  }>();
+
   constructor(private http: HttpClient, private router: Router) {}
-  getPosts() {
+
+  getPosts(pageSize: number, page: number) {
+    let queryParams = `?pageSize=${pageSize}&page=${page}`;
     return this.http
-      .get<PostsDto>(`${this.baseUrl}/posts`)
+      .get<PostsDto>(`${this.baseUrl}/posts` + queryParams)
       .pipe(
         map((v) => {
-          return v.posts.map((post: any) => {
-            return {
-              title: post.title,
-              content: post.content,
-              id: post._id,
-              imagePath: post.imagePath,
-            };
-          });
+          return {
+            posts: v.posts.map((post: any) => {
+              return {
+                title: post.title,
+                content: post.content,
+                id: post._id,
+                imagePath: post.imagePath,
+              };
+            }),
+            totalPosts: v.totalPosts,
+          };
         })
       )
       .subscribe((posts) => {
-        this.posts = posts;
-        this.posts$.next([...this.posts]);
+        this.posts = posts.posts;
+        this.posts$.next({
+          posts: [...this.posts],
+          totalPosts: posts.totalPosts,
+        });
       });
   }
   addPost(post: Posts, image: File) {
@@ -41,8 +53,6 @@ export class PostsService {
     this.http
       .post<{ message: string; post: Posts }>(`${this.baseUrl}/posts`, postData)
       .subscribe((res) => {
-        this.posts.push(post);
-        this.posts$.next(this.posts);
         this.router.navigate(['/list']);
       });
   }
@@ -66,26 +76,22 @@ export class PostsService {
         postData
       )
       .subscribe((res) => {
-        let updatedPosts = [...this.posts];
-        let updatedIndex = updatedPosts.findIndex((post) => post.id === postId);
-        updatedPosts[updatedIndex] = res.posts;
-        this.posts = updatedPosts;
-        this.posts$.next([...this.posts]);
         this.router.navigate(['/list']);
       });
   }
   deletePost(postId: string) {
     //debugger;
-    this.http
-      .delete<{ message: string }>(`${this.baseUrl}/posts/` + postId)
-      .subscribe((res) => {
-        console.log(res.message);
-        let filteredPosts = this.posts.filter((post) => {
-          return post.id !== postId;
-        });
-        this.posts = filteredPosts;
-        this.posts$.next(this.posts);
-      });
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/posts/` + postId
+    );
+    // .subscribe((res) => {
+    //   console.log(res.message);
+    //   let filteredPosts = this.posts.filter((post) => {
+    //     return post.id !== postId;
+    //   });
+    //   this.posts = filteredPosts;
+    //   this.posts$.next(this.posts);
+    // });
   }
 
   getPostById(id: string) {

@@ -71,10 +71,24 @@ router.get("/:id", (req, res, next) => {
 
 router.get("", (req, res, next) => {
   //res.send("Hello world from express!");
-  Post.find()
+  debugger;
+  const pageSize = +req.query.pageSize;
+  const currentPage = +req.query.page;
+  const postQuery = Post.find();
+  let paginatedPosts;
+  if (pageSize && currentPage) {
+    postQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+
+  postQuery
     .then((posts) => {
+      paginatedPosts = posts;
+      return Post.count();
+    })
+    .then((count) => {
       res.status(200).json({
-        posts: posts,
+        posts: paginatedPosts,
+        totalPosts: count,
         message: "Posts fetched successfully.",
       });
     })

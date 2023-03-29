@@ -8,4 +8,5 @@ export interface Posts {
 export interface PostsDto {
   message: string;
   posts: Posts[];
+  totalPosts: number;
 }

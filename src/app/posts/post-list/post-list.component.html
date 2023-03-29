@@ -44,6 +44,7 @@
   (page)="onPageChange($event)"
   color="accent"
   aria-label="Select page"
+  *ngIf="posts.length > 0"
 ></mat-paginator>
 <p *ngIf="posts.length <= 0 && !isLoading" class="info-text mat-body-1">
   No posts to show!
