@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { PostsService } from '../../posts.service';
 
 @Component({
@@ -9,6 +10,8 @@ import { PostsService } from '../../posts.service';
 export class PostListComponent {
   posts = [];
   isLoading: boolean = false;
+  totalPosts: number;
+  pageSize: number = 5;
   constructor(private postService: PostsService) {}
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -17,6 +20,7 @@ export class PostListComponent {
     this.postService.getPosts();
     this.postService.posts$.subscribe((posts) => {
       this.posts = posts;
+      this.totalPosts = posts.length;
       this.isLoading = false;
     });
   }
@@ -26,4 +30,5 @@ export class PostListComponent {
     this.postService.deletePost(id);
     this.isLoading = false;
   }
+  onPageChange(event: PageEvent) {}
 }

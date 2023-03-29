@@ -5,31 +5,57 @@
     </mat-card-header>
     <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
     <mat-card-content *ngIf="!isLoading">
-      <form (submit)="onSubmit(form)" #form="ngForm">
+      <form (submit)="onSubmit()" [formGroup]="form">
         <mat-form-field>
           <mat-label>Title</mat-label>
-          <input
-            name="title"
-            matInput
-            [ngModel]="post?.title"
-            required
-            maxlength="35"
-            #name="ngModel"
-          />
-          <mat-error *ngIf="!name.valid">Please enter the title</mat-error>
+          <input name="title" matInput formControlName="title" />
+          <mat-error *ngIf="!form.get('name')?.valid"
+            >Please enter the title</mat-error
+          >
         </mat-form-field>
         <mat-form-field>
           <textarea
             rows="5"
-            name="content"
             matInput
-            [ngModel]="post?.content"
-            required
-            #content="ngModel"
+            formControlName="content"
             placeholder="Content"
           ></textarea>
-          <mat-error *ngIf="!content.valid">Please enter the content</mat-error>
+          <mat-error *ngIf="!form.get('content')?.valid"
+            >Please enter the content</mat-error
+          >
         </mat-form-field>
+        <div class="img-alin">
+          <div>
+            <button
+              mat-stroked-button
+              (click)="fileControl.click()"
+              type="button"
+            >
+              Choose Image
+            </button>
+            <input
+              type="file"
+              style="display: none"
+              #fileControl
+              (change)="onImagePicked($event)"
+            />
+          </div>
+          <div
+            class="image-preview"
+            *ngIf="imagePath && imagePath !== '' && form.get('image')?.valid"
+          >
+            <img
+              alt="{{ post?.title }}"
+              src="{{ imagePath }}"
+              style="
+                width: 250px;
+                height: 100%;
+                border-radius: 50%;
+                border: 1px solid #424242;
+              "
+            />
+          </div>
+        </div>
         <mat-card-actions align="start">
           <button
             mat-raised-button

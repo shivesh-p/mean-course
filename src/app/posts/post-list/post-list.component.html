@@ -8,6 +8,14 @@
   <mat-expansion-panel [hideToggle]="false" *ngFor="let item of posts">
     <mat-expansion-panel-header>{{ item.title }}</mat-expansion-panel-header>
     {{ item.content }}
+    <div class="img-list" *ngIf="item?.imagePath">
+      <img
+        width="250px"
+        height="100%"
+        src="{{ item?.imagePath }}"
+        alt="{{ item?.title }}"
+      />
+    </div>
     <mat-action-row>
       <button
         mat-mini-fab
@@ -28,6 +36,15 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+<mat-paginator
+  style="margin-top: 1rem"
+  [pageSizeOptions]="[5, 10, 20, 50]"
+  [pageSize]="pageSize"
+  [length]="totalPosts"
+  (page)="onPageChange($event)"
+  color="accent"
+  aria-label="Select page"
+></mat-paginator>
 <p *ngIf="posts.length <= 0 && !isLoading" class="info-text mat-body-1">
   No posts to show!
 </p>

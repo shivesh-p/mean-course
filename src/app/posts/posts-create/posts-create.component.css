@@ -10,3 +10,9 @@ textarea {
 mat-spinner {
   margin: auto;
 }
+
+.img-alin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

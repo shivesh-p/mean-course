@@ -22,6 +22,7 @@ export class PostsService {
               title: post.title,
               content: post.content,
               id: post._id,
+              imagePath: post.imagePath,
             };
           });
         })
@@ -31,29 +32,43 @@ export class PostsService {
         this.posts$.next([...this.posts]);
       });
   }
-  addPost(post: Posts) {
-    //debugger;
+  addPost(post: Posts, image: File) {
+    debugger;
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', image, post.title);
     this.http
-      .post<{ message: string; postId: string }>(`${this.baseUrl}/posts`, post)
+      .post<{ message: string; post: Posts }>(`${this.baseUrl}/posts`, postData)
       .subscribe((res) => {
-        post.id = res.postId;
         this.posts.push(post);
         this.posts$.next(this.posts);
         this.router.navigate(['/list']);
       });
   }
-  editPost(post: Posts, postId: string) {
+  editPost(post: Posts, postId: string, image: File | string) {
     //debugger;
     post.id = postId;
+    let postData: Posts | FormData;
+    if (typeof image == 'object') {
+      postData = new FormData();
+      postData.append('id', postId);
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', image, post.title);
+    } else {
+      postData = { ...post, imagePath: image };
+    }
+
     this.http
-      .put<{ message: string; posts: Posts[] }>(
+      .put<{ message: string; posts: Posts }>(
         `${this.baseUrl}/posts/` + postId,
-        post
+        postData
       )
       .subscribe((res) => {
         let updatedPosts = [...this.posts];
         let updatedIndex = updatedPosts.findIndex((post) => post.id === postId);
-        updatedPosts[updatedIndex] = post;
+        updatedPosts[updatedIndex] = res.posts;
         this.posts = updatedPosts;
         this.posts$.next([...this.posts]);
         this.router.navigate(['/list']);

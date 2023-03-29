@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { MaterialModule } from './mat.module';
 
@@ -25,10 +25,10 @@ import { PostsCreateComponent } from './posts/posts-create/posts-create.componen
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
