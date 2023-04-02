@@ -1,0 +1,52 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Sign Up</mat-card-title>
+    </mat-card-header>
+    <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
+    <mat-card-content *ngIf="!isLoading">
+      <form #myForm="ngForm" (submit)="login(myForm)">
+        <mat-form-field color="accent">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            placeholder="Email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            email
+          />
+          <mat-error *ngIf="myForm.controls['email']?.invalid"
+            >Email is required and must be a valid email.</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field color="accent">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            placeholder="Password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            minlength="3"
+            [type]="hide ? 'password' : 'text'"
+            [(ngModel)]="password"
+          />
+          <button mat-icon-button matSuffix (click)="hide = !hide">
+            <mat-icon style="color: #fff">{{
+              hide ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          <mat-error *ngIf="myForm.controls['password']?.invalid"
+            >Password is required and must be a minimum of 3
+            characters.</mat-error
+          >
+        </mat-form-field>
+        <button mat-raised-button color="accent" [disabled]="!myForm.valid">
+          Submit
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

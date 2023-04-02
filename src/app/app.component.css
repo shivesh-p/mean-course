@@ -2,3 +2,7 @@
   margin: 1.5rem;
   padding: 1rem;
 }
+
+mat-card-title {
+  color: white;
+}

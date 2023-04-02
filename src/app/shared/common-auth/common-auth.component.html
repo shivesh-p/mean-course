@@ -1,0 +1,79 @@
+<mat-card>
+  <mat-card-header>
+    <mat-tab-group
+      color="accent"
+      (selectedTabChange)="onTabClick($event)"
+      [(selectedIndex)]="selectedTabIndex"
+      animationDuration="300ms"
+    >
+      <mat-tab color="accent" label="Login"></mat-tab>
+      <mat-tab color="accent" label="Sign Up"></mat-tab>
+    </mat-tab-group>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <mat-form-field color="accent" appearance="fill" *ngIf="!isLogin">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="form.get('name').invalid">{{
+          getErrorMessage("name")
+        }}</mat-error>
+      </mat-form-field>
+      <mat-form-field color="accent" appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+        <mat-error *ngIf="form.get('email').invalid">{{
+          getErrorMessage("email")
+        }}</mat-error>
+      </mat-form-field>
+      <mat-form-field color="accent" appearance="fill">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hide ? 'password' : 'text'"
+          formControlName="password"
+        />
+        <mat-icon matSuffix (click)="hide = !hide">{{
+          hide ? "visibility" : "visibility_off"
+        }}</mat-icon>
+        <mat-error *ngIf="form.get('password').invalid">{{
+          getErrorMessage("password")
+        }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field color="accent" appearance="fill" *ngIf="!isLogin">
+        <mat-label>Confirm Password</mat-label>
+        <input
+          matInput
+          [type]="hide ? 'password' : 'text'"
+          formControlName="confirmPassword"
+        />
+        <mat-icon matSuffix (click)="hide = !hide">{{
+          hide ? "visibility" : "visibility_off"
+        }}</mat-icon>
+        <mat-error *ngIf="form.get('confirmPassword').invalid">{{
+          getErrorMessage("confirmPassword")
+        }}</mat-error>
+      </mat-form-field>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <button mat-raised-button style="background: black" type="submit">
+          {{ isLogin ? "Log In" : "Sign Up" }}
+        </button>
+        <button
+          mat-raised-button
+          color="accent"
+          type="button"
+          (click)="switchForm()"
+        >
+          {{ isLogin ? "Switch to Sign Up" : "Switch to Log In" }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

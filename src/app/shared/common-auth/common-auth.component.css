@@ -1,0 +1,72 @@
+mat-card {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+mat-card-header {
+  padding: 0;
+}
+
+.mat-tab-header {
+  margin-bottom: 1rem;
+}
+
+.mat-tab-label {
+  font-size: 1.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+button[type="submit"],
+button[type="button"] {
+  margin-top: 1rem;
+}
+
+mat-form-field.ng-touched.ng-invalid mat-label,
+mat-form-field.ng-touched.ng-invalid input {
+  color: #dd2c00 !important;
+}
+
+.mat-tab-body-content {
+  overflow: hidden;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+
+.mat-tab-body-content.ng-enter,
+.mat-tab-body-content.ng-leave {
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mat-tab-body-content.ng-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.mat-tab-body-content.ng-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mat-tab-body-content.ng-leave {
+  opacity: 1;
+  transform: translateX(-100%);
+}
+
+.mat-tab-body-content.ng-leave-active {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+mat-card-content {
+  padding: 16px;
+}
