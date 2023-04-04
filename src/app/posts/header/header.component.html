@@ -1,7 +1,7 @@
 <mat-toolbar>
   <button
     mat-icon-button
-    class="example-icon"
+    class="example-icon menu"
     aria-label="Example icon-button with menu icon"
   >
     <mat-icon>menu</mat-icon>
@@ -9,6 +9,7 @@
   <span>Post It!</span>
   <span class="example-spacer"></span>
   <button
+    *ngIf="isAuthenticated"
     mat-icon-button
     class="example-icon add_circle"
     [routerLink]="['/create']"
@@ -18,6 +19,15 @@
     <mat-icon>add_circle</mat-icon>
   </button>
   <button
+    *ngIf="isAuthenticated"
+    mat-icon-button
+    class="example-icon exit_to_app"
+    title="Logout"
+    (click)="onLogout()"
+  >
+    <mat-icon>exit_to_app</mat-icon>
+  </button>
+  <button
     mat-icon-button
     class="example-icon"
     [routerLink]="['/list']"
@@ -25,5 +35,25 @@
     title="View all posts"
   >
     <mat-icon>list</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    class="example-icon"
+    [routerLink]="['/login']"
+    [routerLinkActive]="'mat-accent'"
+    title="Login"
+    *ngIf="!isAuthenticated"
+  >
+    <mat-icon> person</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    class="example-icon person_add"
+    [routerLink]="['/signup']"
+    [routerLinkActive]="'mat-accent'"
+    title="SignUp"
+    *ngIf="!isAuthenticated"
+  >
+    <mat-icon>person_add</mat-icon>
   </button>
 </mat-toolbar>

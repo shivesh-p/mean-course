@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { AuthService } from 'src/app/auth/auth.service';
 import { PostsService } from '../../posts.service';
 
 @Component({
@@ -13,7 +14,8 @@ export class PostListComponent {
   totalPosts: number = 0;
   pageSize: number = 5;
   currentPage = 1;
-  constructor(private postService: PostsService) {}
+  isAuthenticated: boolean = false;
+  constructor(private postService: PostsService, private auth: AuthService) {}
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
@@ -24,6 +26,10 @@ export class PostListComponent {
       this.posts = posts.posts;
       this.totalPosts = posts.totalPosts;
       this.isLoading = false;
+    });
+
+    this.auth.getAuthStatus().subscribe((status) => {
+      this.isAuthenticated = status;
     });
   }
   onDelete(id: string) {

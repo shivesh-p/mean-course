@@ -16,7 +16,7 @@
         alt="{{ item?.title }}"
       />
     </div>
-    <mat-action-row>
+    <mat-action-row *ngIf="isAuthenticated">
       <button
         mat-mini-fab
         class="example-icon add_circle"

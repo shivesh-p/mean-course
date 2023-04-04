@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms/';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -13,7 +14,11 @@ export class SignUpComponent {
   password: string;
   isLoading: boolean = false;
   hide = true;
-  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+  constructor(
+    iconRegistry: MatIconRegistry,
+    sanitizer: DomSanitizer,
+    private auth: AuthService
+  ) {
     iconRegistry.addSvgIcon(
       'visibility',
       sanitizer.bypassSecurityTrustResourceUrl('assets/icons/visibility.svg')
@@ -26,8 +31,9 @@ export class SignUpComponent {
     );
   }
 
-  login(form: NgForm) {
+  signUp(form: NgForm) {
     // handle form submission logic here
     console.log(form.value);
+    this.auth.signUp(form.value);
   }
 }
