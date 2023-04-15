@@ -15,10 +15,15 @@ export class PostListComponent {
   pageSize: number = 5;
   currentPage = 1;
   isAuthenticated: boolean = false;
-  constructor(private postService: PostsService, private auth: AuthService) {}
+  userId: string;
+  constructor(
+    private postService: PostsService,
+    private authService: AuthService
+  ) {}
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    this.userId = this.authService.getUserId();
     this.isLoading = true;
     this.postService.getPosts(this.pageSize, 1);
     this.postService.posts$.subscribe((posts) => {
@@ -28,7 +33,7 @@ export class PostListComponent {
       this.isLoading = false;
     });
 
-    this.auth.getAuthStatus().subscribe((status) => {
+    this.authService.getAuthStatus().subscribe((status) => {
       this.isAuthenticated = status;
     });
   }

@@ -3,6 +3,7 @@ export interface Posts {
   title: string;
   content: string;
   imagePath: string;
+  createdBy: string;
 }
 
 export interface PostsDto {

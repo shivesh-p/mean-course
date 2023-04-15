@@ -6,16 +6,16 @@ const router = express.Router();
 
 router.post("/signup", (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then((v) => {
-    console.log("hash===", v);
+    //console.log("hash===", v);
     const user = new User({
       email: req.body.email,
       password: v,
     });
-    console.log("user1===", user);
+    //console.log("user1===", user);
     user
       .save()
       .then((result) => {
-        console.log("user2===", result);
+        //console.log("user2===", result);
         res.status(201).json({
           message: "User created successfully.",
           result: result,
@@ -60,6 +60,7 @@ router.post("/login", function (req, res) {
       return res.status(200).json({
         token: token,
         expiresIn: 3600,
+        userId: loginUser._id,
       });
     })
     .catch((error) => {

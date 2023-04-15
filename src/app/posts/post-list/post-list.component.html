@@ -16,24 +16,26 @@
         alt="{{ item?.title }}"
       />
     </div>
-    <mat-action-row *ngIf="isAuthenticated">
-      <button
-        mat-mini-fab
-        class="example-icon add_circle"
-        [routerLink]="['/edit', item.id]"
-        color="accent"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button
-        mat-mini-fab
-        class="example-icon add_circle"
-        (click)="onDelete(item.id)"
-        color="warn"
-      >
-        <mat-icon>delete_outline</mat-icon>
-      </button>
-    </mat-action-row>
+    <ng-container *ngIf="item.createdBy === userId">
+      <mat-action-row *ngIf="isAuthenticated">
+        <button
+          mat-mini-fab
+          class="example-icon add_circle"
+          [routerLink]="['/edit', item.id]"
+          color="accent"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          class="example-icon add_circle"
+          (click)="onDelete(item.id)"
+          color="warn"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </mat-action-row>
+    </ng-container>
   </mat-expansion-panel>
 </mat-accordion>
 <mat-paginator

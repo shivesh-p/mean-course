@@ -30,6 +30,7 @@ export class PostsService {
                 content: post.content,
                 id: post._id,
                 imagePath: post.imagePath,
+                createdBy: post.createdBy,
               };
             }),
             totalPosts: v.totalPosts,
@@ -67,7 +68,7 @@ export class PostsService {
       postData.append('content', post.content);
       postData.append('image', image, post.title);
     } else {
-      postData = { ...post, imagePath: image };
+      postData = { ...post, imagePath: image, createdBy: null };
     }
 
     this.http

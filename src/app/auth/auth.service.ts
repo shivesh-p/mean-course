@@ -14,6 +14,7 @@ export interface User {
 export class AuthService {
   token: string;
   timer: any;
+  private userId: string;
   private baseUrl: string = 'http://localhost:3000/api/user';
   private authStatusListener$ = new BehaviorSubject<boolean>(false);
 
@@ -26,6 +27,9 @@ export class AuthService {
   getToken() {
     return this.token;
   }
+  getUserId() {
+    return this.userId;
+  }
 
   signUp(user: User) {
     this.http.post(`${this.baseUrl}/signup`, user).subscribe((v) => {
@@ -35,18 +39,24 @@ export class AuthService {
 
   login(user: User) {
     this.http
-      .post<{ token: string; expiresIn: number }>(`${this.baseUrl}/login`, user)
+      .post<{ token: string; expiresIn: number; userId: string }>(
+        `${this.baseUrl}/login`,
+        user
+      )
       .subscribe((v) => {
         //console.log(v);
-        const now = new Date();
-        const expirationDate = new Date(now.getTime() + v.expiresIn * 1000);
-        this.setAuthTimer(v.expiresIn);
         if (v.token) {
+          const now = new Date();
+          const expirationDate = new Date(now.getTime() + v.expiresIn * 1000);
+          this.setAuthTimer(v.expiresIn);
+
           this.token = v.token;
           this.authStatusListener$.next(true);
+          this.userId = v.userId;
+
+          this.saveAuthData(this.token, expirationDate, v.userId);
+          this.router.navigate(['/list']);
         }
-        this.saveAuthData(this.token, expirationDate);
-        this.router.navigate(['/list']);
       });
   }
 
@@ -54,18 +64,21 @@ export class AuthService {
     clearTimeout(this.timer);
     this.clearAuthData();
     this.token = null;
+    this.userId = null;
     this.authStatusListener$.next(false);
   }
 
-  private saveAuthData(token: string, expirationDate: Date) {
+  private saveAuthData(token: string, expirationDate: Date, userId: string) {
     //settings the auth data
     localStorage.setItem('token', token);
+    localStorage.setItem('userId', userId);
     localStorage.setItem('expirationDate', expirationDate.toISOString());
   }
   private clearAuthData() {
     //clearing the auth data
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userId');
   }
 
   autoAuthUser() {
@@ -97,11 +110,14 @@ export class AuthService {
   private getAuthData() {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expirationDate');
+    const userId = localStorage.getItem('userId');
+
     if (!(token && expirationDate)) return null;
     else {
       return {
         token: token,
         expirationDate: new Date(expirationDate),
+        userId: userId,
       };
     }
   }

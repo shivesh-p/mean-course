@@ -40,15 +40,17 @@ router.post(
       title: req.body.title,
       content: req.body.content,
       imagePath: url + "/images/" + req.file.filename,
+      createdBy: req.userData.userId,
     });
     post.save().then((addedPost) => {
       res.status(201).json({
-        message: "Post added successfully.",
+        message: "CREATE_SUCCESS",
         post: {
           id: addedPost._id,
           title: addedPost.title,
           content: addedPost.content,
           imagePath: addedPost.imagePath,
+          createdBy: addedPost.createdBy,
         },
       });
     });
@@ -101,13 +103,22 @@ router.get("", (req, res, next) => {
 
 router.delete("/:id", checkAuth, (req, res, next) => {
   //console.log(req.params.id);
-  Post.deleteOne({ _id: req.params.id }).then((result) => {
-    console.log(result);
-    res.status(201).json({
-      message: "Post deleted successfully.",
-    });
-  });
+  Post.deleteOne({ _id: req.params.id, createdBy: req.userData.userId }).then(
+    (result) => {
+      console.log(result);
+      if (result.deletedCount > 0) {
+        res.status(201).json({
+          message: "DELETE_SUCCESS",
+        });
+      } else {
+        res.status(401).json({
+          message: "NOT_AUTHORIZED",
+        });
+      }
+    }
+  );
 });
+
 router.put(
   "/:id",
   checkAuth,
@@ -124,13 +135,23 @@ router.put(
       title: req.body.title,
       content: req.body.content,
       imagePath: imagePath,
+      createdBy: req.userData.userId,
     });
-    Post.updateOne({ _id: req.params.id }, post).then((result) => {
+    Post.updateOne(
+      { _id: req.params.id, createdBy: req.userData.userId },
+      post
+    ).then((result) => {
       console.log(result);
-      res.status(201).json({
-        message: "Post edited successfully.",
-        post: post,
-      });
+      if (result.modifiedCount > 0) {
+        res.status(201).json({
+          message: "EDIT_SUCCESS",
+          post: post,
+        });
+      } else {
+        res.status(401).json({
+          message: "NOT_AUTHORIZED",
+        });
+      }
     });
   }
 );
