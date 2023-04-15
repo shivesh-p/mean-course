@@ -29,7 +29,7 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.post("/login", function (req, res) {
+router.post("/login", (req, res, next) => {
   let loginUser;
   User.findOne({ email: req.body.email })
     .then((user) => {

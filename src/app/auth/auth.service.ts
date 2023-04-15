@@ -28,7 +28,8 @@ export class AuthService {
     return this.token;
   }
   getUserId() {
-    return this.userId;
+    if (this.userId) return this.userId;
+    else return localStorage.getItem('userId');
   }
 
   signUp(user: User) {

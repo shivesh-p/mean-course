@@ -1,71 +1,44 @@
 const express = require("express");
 
 const Post = require("../models/posts");
-const multer = require("multer");
 
 const router = express.Router();
 const checkAuth = require("../middleware/check-auth");
 
-const MIME_TYPE_MAP = {
-  "image/jpeg": "jpg",
-  "image/jpg": "jpg",
-  "image/png": "png",
-};
+const multer = require("../middleware/multer-mw");
 
-const upload = multer.diskStorage({
-  destination: (req, file, cb) => {
-    let error = new Error("Invalid MIME Type");
-    const isValid = MIME_TYPE_MAP[file.mimetype];
-    if (isValid) {
-      error = null;
-    }
-
-    cb(error, "backend/images");
-  },
-  filename: (req, file, cb) => {
-    const name = file.originalname.toLowerCase().split(" ").join("-");
-    const ext = MIME_TYPE_MAP[file.mimetype];
-    cb(null, name + "-" + Date.now() + "." + ext);
-  },
-});
-
-router.post(
-  "",
-  checkAuth,
-  multer({ storage: upload }).single("image"),
-  (req, res, next) => {
-    //const post = req.body;
-    const url = req.protocol + "://" + req.get("host");
-    const post = new Post({
-      title: req.body.title,
-      content: req.body.content,
-      imagePath: url + "/images/" + req.file.filename,
-      createdBy: req.userData.userId,
-    });
-    post
-      .save()
-      .then((addedPost) => {
-        res.status(201).json({
-          message: "CREATE_SUCCESS",
-          post: {
-            id: addedPost._id,
-            title: addedPost.title,
-            content: addedPost.content,
-            imagePath: addedPost.imagePath,
-            createdBy: addedPost.createdBy,
-          },
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          error: {
-            message: "Couldn't create a Post!",
-          },
-        });
+router.post("", checkAuth, multer, (req, res, next) => {
+  //const post = req.body;
+  const url = req.protocol + "://" + req.get("host");
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content,
+    imagePath: url + "/images/" + req.file.filename,
+    createdBy: req.userData.userId,
+  });
+  post
+    .save()
+    .then((addedPost) => {
+      res.status(201).json({
+        message: "CREATE_SUCCESS",
+        post: {
+          id: addedPost._id,
+          title: addedPost.title,
+          content: addedPost.content,
+          imagePath: addedPost.imagePath,
+          createdBy: addedPost.createdBy,
+        },
       });
-    console.log(post);
-  }
-);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: {
+          message: "Couldn't create a Post!",
+        },
+      });
+    });
+  console.log(post);
+});
 
 router.get("/:id", checkAuth, (req, res, next) => {
   Post.findById(req.params.id)
@@ -146,41 +119,38 @@ router.delete("/:id", checkAuth, (req, res, next) => {
     });
 });
 
-router.put(
-  "/:id",
-  checkAuth,
-  multer({ storage: upload }).single("image"),
-  (req, res, next) => {
-    //console.log(req.params.id);
-    let imagePath = req.body.imagePath;
-    if (req.file) {
-      const url = req.protocol + "://" + req.get("host");
-      imagePath = url + "/images/" + req.file.filename;
-    }
-    const post = new Post({
-      _id: req.params.id,
-      title: req.body.title,
-      content: req.body.content,
-      imagePath: imagePath,
-      createdBy: req.userData.userId,
-    });
-    Post.updateOne(
-      { _id: req.params.id, createdBy: req.userData.userId },
-      post
-    ).then((result) => {
-      console.log(result);
-      if (result.modifiedCount > 0) {
-        res.status(201).json({
-          message: "EDIT_SUCCESS",
-          post: post,
-        });
-      } else {
-        res.status(401).json({
-          message: "NOT_AUTHORIZED",
-        });
-      }
-    });
+router.put("/:id", checkAuth, multer, (req, res, next) => {
+  //console.log(req.params.id);
+  let imagePath = req.body.imagePath;
+  if (req.file) {
+    const url = req.protocol + "://" + req.get("host");
+    imagePath = url + "/images/" + req.file.filename;
   }
-);
+  const post = new Post({
+    _id: req.params.id,
+    title: req.body.title,
+    content: req.body.content,
+    imagePath: imagePath,
+    createdBy: req.userData.userId,
+  });
+  Post.updateOne(
+    { _id: req.params.id, createdBy: req.userData.userId },
+    post
+  ).then((result) => {
+    console.log(result);
+    if (result.matchedCount > 0) {
+      res.status(201).json({
+        message: "EDIT_SUCCESS",
+        post: post,
+      });
+    } else {
+      res.status(401).json({
+        error: {
+          message: "NOT_AUTHORIZED",
+        },
+      });
+    }
+  });
+});
 
 module.exports = router;
