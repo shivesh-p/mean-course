@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, map } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 import { Posts, PostsDto } from './general.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostsService {
-  private baseUrl: string = 'http://localhost:3000/api';
+  private baseUrl: string = environment.baseApiUrl;
   private posts: Posts[] = [];
   public posts$: Subject<{ posts: Posts[]; totalPosts: number }> = new Subject<{
     posts: Posts[];
