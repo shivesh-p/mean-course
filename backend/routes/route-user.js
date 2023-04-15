@@ -35,7 +35,9 @@ router.post("/login", function (req, res) {
     .then((user) => {
       if (!user) {
         return res.status(401).json({
-          message: "USER_NOT_EXIST",
+          error: {
+            message: "USER_NOT_EXIST",
+          },
         });
       }
       loginUser = user;
@@ -44,7 +46,9 @@ router.post("/login", function (req, res) {
     .then((result) => {
       if (!result) {
         return res.status(401).json({
-          message: "PASSWORD_MISMATCH",
+          error: {
+            message: "PASSWORD_MISMATCH",
+          },
         });
       }
       const token = jwt.sign(
@@ -65,7 +69,9 @@ router.post("/login", function (req, res) {
     })
     .catch((error) => {
       return res.status(401).json({
-        message: "AUTH_FAILED",
+        error: {
+          message: "AUTH_FAILED",
+        },
       });
     });
 });

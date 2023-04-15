@@ -32,8 +32,13 @@ export class AuthService {
   }
 
   signUp(user: User) {
-    this.http.post(`${this.baseUrl}/signup`, user).subscribe((v) => {
-      console.log(v);
+    return this.http.post(`${this.baseUrl}/signup`, user).subscribe({
+      next: (v) => {
+        this.router.navigate(['/']);
+      },
+      error: (v) => {
+        this.authStatusListener$.next(false);
+      },
     });
   }
 
@@ -43,20 +48,25 @@ export class AuthService {
         `${this.baseUrl}/login`,
         user
       )
-      .subscribe((v) => {
-        //console.log(v);
-        if (v.token) {
-          const now = new Date();
-          const expirationDate = new Date(now.getTime() + v.expiresIn * 1000);
-          this.setAuthTimer(v.expiresIn);
+      .subscribe({
+        next: (v) => {
+          //console.log(v);
+          if (v.token) {
+            const now = new Date();
+            const expirationDate = new Date(now.getTime() + v.expiresIn * 1000);
+            this.setAuthTimer(v.expiresIn);
 
-          this.token = v.token;
-          this.authStatusListener$.next(true);
-          this.userId = v.userId;
+            this.token = v.token;
+            this.authStatusListener$.next(true);
+            this.userId = v.userId;
 
-          this.saveAuthData(this.token, expirationDate, v.userId);
-          this.router.navigate(['/list']);
-        }
+            this.saveAuthData(this.token, expirationDate, v.userId);
+            this.router.navigate(['/list']);
+          }
+        },
+        error: (v) => {
+          this.authStatusListener$.next(false);
+        },
       });
   }
 

@@ -40,10 +40,15 @@ export class PostListComponent {
   onDelete(id: string) {
     console.log(id);
     this.isLoading = true;
-    this.postService.deletePost(id).subscribe(() => {
-      this.postService.getPosts(this.pageSize, this.currentPage);
+    this.postService.deletePost(id).subscribe({
+      next: () => {
+        this.postService.getPosts(this.pageSize, this.currentPage);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
-    this.isLoading = false;
   }
   onPageChange(event: PageEvent) {
     debugger;

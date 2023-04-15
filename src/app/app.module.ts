@@ -11,6 +11,8 @@ import { AppComponent } from './app.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { LoginComponent } from './auth/login/login.component';
 import { SignUpComponent } from './auth/signup/signup.component';
+import { ErrorComponent } from './error-component/error.component';
+import { ErrorInterceptor } from './error.interceptor';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HeaderComponent } from './posts/header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
@@ -27,6 +29,7 @@ import { CommonAuthComponent } from './shared/common-auth/common-auth.component'
     LoginComponent,
     SignUpComponent,
     CommonAuthComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,11 @@ import { CommonAuthComponent } from './shared/common-auth/common-auth.component'
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true,
     },
   ],
